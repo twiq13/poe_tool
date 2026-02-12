@@ -1,0 +1,253 @@
+/* =========================================================
+   SCOPED THEME (tout est sous .poe-calc)
+   ========================================================= */
+.poe-calc{
+  --bg: #1C1C1C;
+  --panel: rgba(255,255,255,.04);
+  --panel-2: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.12);
+  --stroke-2: rgba(255,255,255,.18);
+  --text: #fff;
+  --muted: rgba(255,255,255,.72);
+  --muted-2: rgba(255,255,255,.55);
+
+  --good: #2ecc71;
+  --warn: #f39c12;
+  --bad:  #e74c3c;
+
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.poe-calc *{ box-sizing:border-box; }
+
+.poe-calc .wrap{
+  width: min(1600px, calc(100vw - 48px));
+  margin: 20px auto;
+  padding: 18px;
+  background: var(--bg);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow);
+}
+
+.poe-calc .header{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.poe-calc h1{
+  margin:0;
+  font-size: 18px;
+  letter-spacing: .2px;
+}
+
+.poe-calc .sub{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 900px;
+}
+
+.poe-calc .panel{
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  overflow:hidden;
+}
+
+.poe-calc .topbar{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border-bottom: 1px solid var(--stroke);
+}
+
+.poe-calc .group{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.poe-calc .chip{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  padding: 8px 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.poe-calc .chip strong{ color: var(--text); font-weight: 800; }
+.poe-calc .chip .mini{ color: var(--muted-2); font-size: 12px; }
+
+.poe-calc .gains-input{
+  min-width:240px;
+  max-width:320px;
+  width:100%;
+}
+
+.poe-calc .btns{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.poe-calc button{
+  cursor:pointer;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-weight: 800;
+  font-size: 13px;
+}
+.poe-calc button:hover{
+  background: rgba(255,255,255,.10);
+  border-color: var(--stroke-2);
+}
+.poe-calc button.danger{
+  border-color: rgba(231,76,60,.35);
+  background: rgba(231,76,60,.10);
+}
+.poe-calc button.danger:hover{
+  background: rgba(231,76,60,.16);
+}
+
+.poe-calc input[type="text"],
+.poe-calc input[type="number"]{
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 9px 10px;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+}
+.poe-calc input:focus{
+  border-color: var(--stroke-2);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.07);
+}
+
+.poe-calc .table-wrap{
+  overflow:auto;
+  background: rgba(0,0,0,.10);
+}
+
+.poe-calc table{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 900px;
+}
+
+.poe-calc thead th{
+  text-align:left;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--stroke);
+  background: rgba(255,255,255,.03);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.poe-calc tbody td{
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  vertical-align: middle;
+}
+
+.poe-calc tbody tr:hover{
+  background: rgba(255,255,255,.03);
+}
+
+.poe-calc .num{
+  text-align:right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.poe-calc .muted{ color: var(--muted-2); font-size: 12px; }
+.poe-calc .gain{ font-weight: 900; }
+
+.poe-calc .row-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap: 8px;
+}
+
+.poe-calc .status{
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: rgba(255,255,255,.02);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.poe-calc .status-col{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.poe-calc .pill{
+  padding: 6px 10px;
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.poe-calc .pill.good{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.10); color: rgba(46,204,113,.95); }
+.poe-calc .pill.warn{ border-color: rgba(243,156,18,.35); background: rgba(243,156,18,.10); color: rgba(243,156,18,.95); }
+.poe-calc .pill.bad { border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.10); color: rgba(231,76,60,.95); }
+
+.poe-calc .help{
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.poe-calc .mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--stroke);
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+@media (max-width: 720px){
+  .poe-calc .wrap{ padding: 12px; }
+  .poe-calc .chip{ width: 100%; justify-content: space-between; }
+  .poe-calc .btns{ width: 100%; justify-content: flex-end; }
+}
