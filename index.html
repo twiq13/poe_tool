@@ -4,262 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Répartition des gains (Fairplay)</title>
-
-  <style>
-    /* =========================================================
-       ✅ SCOPED THEME (n'écrase pas ta page, et ne se fait pas écraser)
-       Tout est sous .poe-calc
-       ========================================================= */
-    .poe-calc{
-      --bg: #1C1C1C;
-      --panel: rgba(255,255,255,.04);
-      --panel-2: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.12);
-      --stroke-2: rgba(255,255,255,.18);
-      --text: #fff;
-      --muted: rgba(255,255,255,.72);
-      --muted-2: rgba(255,255,255,.55);
-
-      --good: #2ecc71;
-      --warn: #f39c12;
-      --bad:  #e74c3c;
-
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .poe-calc *{ box-sizing:border-box; }
-
-    .poe-calc .wrap{
-      max-width: 1800px;
-      margin: 0 auto;
-      padding: 18px;
-      background: var(--bg);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: var(--shadow);
-    }
-
-    .poe-calc .header{
-      display:flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-    .poe-calc h1{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: .2px;
-    }
-    .poe-calc .sub{
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
-      max-width: 780px;
-    }
-
-    .poe-calc .panel{
-      background: var(--panel);
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      overflow:hidden;
-    }
-
-    .poe-calc .topbar{
-      display:flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border-bottom: 1px solid var(--stroke);
-    }
-
-    .poe-calc .group{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-
-    .poe-calc .chip{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      padding: 8px 10px;
-      background: var(--panel-2);
-      border: 1px solid var(--stroke);
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .poe-calc .chip strong{ color: var(--text); font-weight: 800; }
-    .poe-calc .chip .mini{ color: var(--muted-2); font-size: 12px; }
-
-    .poe-calc .btns{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-
-    .poe-calc button{
-      cursor:pointer;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-weight: 800;
-      font-size: 13px;
-    }
-    .poe-calc button:hover{
-      background: rgba(255,255,255,.10);
-      border-color: var(--stroke-2);
-    }
-    .poe-calc button.danger{
-      border-color: rgba(231,76,60,.35);
-      background: rgba(231,76,60,.10);
-    }
-    .poe-calc button.danger:hover{
-      background: rgba(231,76,60,.16);
-    }
-
-    /* Inputs - forcés en dark */
-    .poe-calc input[type="text"],
-    .poe-calc input[type="number"]{
-      background: rgba(0,0,0,.22);
-      border: 1px solid var(--stroke);
-      border-radius: 10px;
-      color: var(--text);
-      padding: 9px 10px;
-      font-size: 13px;
-      outline: none;
-      width: 100%;
-      min-width: 0;
-    }
-    .poe-calc input:focus{
-      border-color: var(--stroke-2);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.07);
-    }
-
-    /* Table */
-    .poe-calc .table-wrap{
-      overflow:auto;
-      background: rgba(0,0,0,.10);
-    }
-
-    .poe-calc table{
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;              /* ✅ évite le layout chelou */
-      min-width: 900px;                 /* ✅ scroll ok si écran petit */
-    }
-
-    .poe-calc thead th{
-      text-align:left;
-      font-size: 12px;
-      color: var(--muted);
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .poe-calc tbody td{
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      vertical-align: middle;
-    }
-
-    .poe-calc tbody tr:hover{ background: rgba(255,255,255,.03); }
-
-    .poe-calc .num{
-      text-align:right;
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-    }
-    .poe-calc .muted{ color: var(--muted-2); font-size: 12px; }
-    .poe-calc .gain{ font-weight: 900; }
-
-    .poe-calc .row-actions{
-      display:flex;
-      justify-content:flex-end;
-      gap: 8px;
-    }
-
-    /* Status */
-    .poe-calc .status{
-      padding: 10px 12px;
-      color: var(--muted);
-      font-size: 13px;
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      background: rgba(255,255,255,.02);
-      border-top: 1px solid rgba(255,255,255,.06);
-    }
-
-    .poe-calc .pill{
-      padding: 6px 10px;
-      border: 1px solid var(--stroke);
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .poe-calc .pill.good{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.10); color: rgba(46,204,113,.95); }
-    .poe-calc .pill.warn{ border-color: rgba(243,156,18,.35); background: rgba(243,156,18,.10); color: rgba(243,156,18,.95); }
-    .poe-calc .pill.bad { border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.10); color: rgba(231,76,60,.95); }
-
-    .poe-calc .help{
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-    }
-    .poe-calc code.inline{
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--stroke);
-      padding: 2px 6px;
-      border-radius: 8px;
-      color: var(--text);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-    }
-
-    /* Mobile : évite les gros espaces */
-    @media (max-width: 720px){
-      .poe-calc .wrap{ padding: 12px; }
-      .poe-calc .chip{ width: 100%; justify-content: space-between; }
-      .poe-calc .btns{ width: 100%; justify-content: flex-end; }
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
-  <!-- ✅ Le composant est isolé ici -->
   <div class="poe-calc">
     <div class="wrap">
       <div class="header">
         <div>
           <h1>Répartition des gains (mode fairplay)</h1>
           <p class="sub">
-            Règle: remboursement des investissements puis partage du profit au prorata des maps.
-            Si les gains ne couvrent pas les investissements, répartition au prorata de l’investissement.
+            Règle : on rembourse l’investissement de chacun, puis on partage le profit selon les <b>participations</b> (maps jouées).
+            <br/>Affichage : <b>Maps total</b> = maps du run (valeur max). <b>Participations</b> = somme des maps (utilisée pour le calcul).
           </p>
         </div>
       </div>
@@ -270,9 +26,9 @@
             <div class="chip">
               Gains du groupe :
               <strong><span id="gainsDisplay">6000</span></strong>
-              <span class="mini">(chaos)</span>
+              <span class="mini">(div/chaos)</span>
             </div>
-            <div style="min-width:240px; max-width:320px; width:100%;">
+            <div class="gains-input">
               <input id="gainsInput" type="number" min="0" step="1" value="6000" />
             </div>
           </div>
@@ -287,11 +43,11 @@
           <table>
             <thead>
               <tr>
-                <th style="width: 180px;">Nom du joueur</th>
-                <th style="width: 170px;">Nombre de maps jouées</th>
+                <th style="width: 200px;">Nom du joueur</th>
+                <th style="width: 180px;">Maps jouées</th>
                 <th style="width: 280px;">Investissement total</th>
-                <th style="width: 250px;">Investissement / map</th>
-                <th style="width: 210px;">Gains</th>
+                <th style="width: 240px;">Invest / map</th>
+                <th style="width: 200px;">Gains</th>
                 <th style="width: 80px;"></th>
               </tr>
             </thead>
@@ -300,13 +56,14 @@
         </div>
 
         <div class="status">
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div class="status-col">
             <span class="pill" id="playersPill">Joueurs: 0</span>
             <span class="pill" id="invPill">Invest total: 0</span>
             <span class="pill" id="mapsPill">Maps total: 0</span>
+            <span class="pill" id="partsPill">Participations: 0</span>
             <span class="pill" id="profitPill">Profit: 0</span>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div class="status-col">
             <span class="pill" id="modePill">Mode: —</span>
             <span class="pill" id="checkPill">Somme gains: 0</span>
           </div>
@@ -314,19 +71,19 @@
       </div>
 
       <div class="help">
-        Astuce: tu peux laisser des lignes vides, elles ne seront pas comptées.
-        Affichage en FR (virgule) et arrondi à 2 décimales.<br/>
-        Modèle “fairplay” =
-        <code class="inline">gain = inv + (gains - totalInv) * (maps / totalMaps)</code>
-        (si <code class="inline">gains &lt; totalInv</code> ⇒ prorata investissement).
+        Modèle :
+        <span class="mono">gain = inv + (gains - totalInv) * (maps / sommeParticipations)</span>
+        <br/>
+        Si <span class="mono">gains &lt; totalInv</span> : répartition au prorata de l’investissement.
       </div>
     </div>
   </div>
 
   <script>
-    // Utils
-    const fmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0, minimumFractionDigits: 0 });
-    const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+    // -----------------------
+    // Format / utils (0 décimale)
+    // -----------------------
+    const fmtInt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0, minimumFractionDigits: 0 });
 
     const toNum = (v) => {
       const n = Number(v);
@@ -334,29 +91,31 @@
     };
     const roundInt = (n) => Math.round(n);
 
-    // Data
+    // -----------------------
+    // Data (✅ 1 seule ligne au départ)
+    // -----------------------
     const defaultRows = [
-      { name: "Name 1", maps: 12, inv: 120 },
-      { name: "Name 2", maps: 12, inv: 100 },
-      { name: "Name 3", maps: 10, inv: 150 },
-      { name: "Name 4", maps: 5,  inv: 200 },
+      { name: "Joueur 1", maps: 0, inv: 0 }
     ];
     let rows = structuredClone(defaultRows);
 
+    // -----------------------
     // DOM
+    // -----------------------
     const tbody = document.getElementById("tbody");
     const gainsInput = document.getElementById("gainsInput");
     const gainsDisplay = document.getElementById("gainsDisplay");
 
     const playersPill = document.getElementById("playersPill");
     const invPill = document.getElementById("invPill");
-    const mapsPill = document.getElementById("mapsPill");
+    const mapsPill = document.getElementById("mapsPill");     // MAX maps (run)
+    const partsPill = document.getElementById("partsPill");   // SUM maps (participations)
     const profitPill = document.getElementById("profitPill");
     const modePill = document.getElementById("modePill");
     const checkPill = document.getElementById("checkPill");
 
     document.getElementById("addRowBtn").addEventListener("click", () => {
-      rows.push({ name: "", maps: 0, inv: 0 });
+      rows.push({ name: `Joueur ${rows.length + 1}`, maps: 0, inv: 0 });
       render();
       recalc();
     });
@@ -369,48 +128,70 @@
     });
 
     gainsInput.addEventListener("input", () => {
-      gainsDisplay.textContent = fmt0.format(toNum(gainsInput.value));
+      gainsDisplay.textContent = fmtInt.format(toNum(gainsInput.value));
       recalc();
     });
 
+    // -----------------------
+    // Render
+    // -----------------------
     function render() {
       tbody.innerHTML = "";
 
       rows.forEach((r, idx) => {
         const tr = document.createElement("tr");
 
+        // Name
         const tdName = document.createElement("td");
         const inName = document.createElement("input");
         inName.type = "text";
         inName.value = r.name ?? "";
         inName.placeholder = "Nom…";
-        inName.addEventListener("input", (e) => { rows[idx].name = e.target.value; recalc(); });
+        inName.addEventListener("input", (e) => {
+          rows[idx].name = e.target.value;
+          recalc();
+        });
         tdName.appendChild(inName);
 
+        // Maps
         const tdMaps = document.createElement("td");
         const inMaps = document.createElement("input");
-        inMaps.type = "number"; inMaps.min = "0"; inMaps.step = "1";
+        inMaps.type = "number";
+        inMaps.min = "0";
+        inMaps.step = "1";
         inMaps.value = r.maps ?? 0;
-        inMaps.addEventListener("input", (e) => { rows[idx].maps = toNum(e.target.value); recalc(); });
+        inMaps.addEventListener("input", (e) => {
+          rows[idx].maps = toNum(e.target.value);
+          recalc();
+        });
         tdMaps.appendChild(inMaps);
 
+        // Invest
         const tdInv = document.createElement("td");
         const inInv = document.createElement("input");
-        inInv.type = "number"; inInv.min = "0"; inInv.step = "1";
+        inInv.type = "number";
+        inInv.min = "0";
+        inInv.step = "1";
         inInv.value = r.inv ?? 0;
-        inInv.addEventListener("input", (e) => { rows[idx].inv = toNum(e.target.value); recalc(); });
+        inInv.addEventListener("input", (e) => {
+          rows[idx].inv = toNum(e.target.value);
+          recalc();
+        });
         tdInv.appendChild(inInv);
 
+        // Invest/map (computed)
         const tdInvMap = document.createElement("td");
         tdInvMap.className = "num muted";
         tdInvMap.dataset.role = "invMap";
         tdInvMap.textContent = "—";
 
+        // Gain (computed)
         const tdGain = document.createElement("td");
         tdGain.className = "num gain";
         tdGain.dataset.role = "gain";
         tdGain.textContent = "—";
 
+        // Actions
         const tdAct = document.createElement("td");
         const actions = document.createElement("div");
         actions.className = "row-actions";
@@ -432,54 +213,72 @@
         tr.appendChild(tdInvMap);
         tr.appendChild(tdGain);
         tr.appendChild(tdAct);
+
         tbody.appendChild(tr);
       });
     }
 
+    // -----------------------
+    // Calc (Fairplay)
+    // -----------------------
     function recalc() {
       const totalGains = toNum(gainsInput.value);
-      gainsDisplay.textContent = fmt0.format(totalGains);
+      gainsDisplay.textContent = fmtInt.format(totalGains);
 
-      // Active rows
+      // Active rows = has name OR any non-zero number
       const active = rows
         .map((r, i) => ({ ...r, i }))
         .filter(r => (String(r.name || "").trim() !== "") || toNum(r.maps) > 0 || toNum(r.inv) > 0);
 
       const totalInv = active.reduce((s, r) => s + toNum(r.inv), 0);
-      const totalMaps = active.reduce((s, r) => s + toNum(r.maps), 0);
+
+      // ✅ Display needs MAX (maps du run), calc needs SUM (participations)
+      const mapsMax = active.reduce((m, r) => Math.max(m, toNum(r.maps)), 0);
+      const mapsSum = active.reduce((s, r) => s + toNum(r.maps), 0);
 
       const enoughToRefund = totalGains >= totalInv;
       const profit = totalGains - totalInv;
 
       playersPill.textContent = `Joueurs: ${active.length}`;
-      invPill.textContent = `Invest total: ${fmt.format(totalInv)}`;
-      mapsPill.textContent = `Maps total: ${fmt0.format(totalMaps)}`;
-      profitPill.textContent = `Profit: ${fmt.format(profit)}`;
+      invPill.textContent = `Invest total: ${fmtInt.format(roundInt(totalInv))}`;
+      mapsPill.textContent = `Maps total: ${fmtInt.format(mapsMax)}`;
+      partsPill.textContent = `Participations: ${fmtInt.format(mapsSum)}`;
+      profitPill.textContent = `Profit: ${fmtInt.format(roundInt(profit))}`;
 
       profitPill.className = "pill " + (profit >= 0 ? "good" : "bad");
       modePill.className = "pill " + (enoughToRefund ? "good" : "warn");
-      modePill.textContent = enoughToRefund ? "Mode: remboursement + profit/maps" : "Mode: gains < investissement (prorata inv)";
+      modePill.textContent = enoughToRefund
+        ? "Mode: remboursement + profit/participations"
+        : "Mode: gains < investissement (prorata inv)";
 
+      // Compute
       const computed = new Map();
 
       active.forEach(r => {
         const maps = toNum(r.maps);
         const inv = toNum(r.inv);
+
         const invPerMap = maps > 0 ? inv / maps : 0;
 
         let gain = 0;
         if (!active.length || totalGains === 0) {
           gain = 0;
         } else if (!enoughToRefund) {
+          // prorata investissement si pas assez
           gain = totalInv > 0 ? totalGains * (inv / totalInv) : 0;
         } else {
-          const share = totalMaps > 0 ? profit * (maps / totalMaps) : 0;
+          // remboursement + profit au prorata des participations
+          const share = mapsSum > 0 ? profit * (maps / mapsSum) : 0;
           gain = inv + share;
         }
 
-        computed.set(r.i, { invPerMap, gain: roundInt(gain) });
+        computed.set(r.i, {
+          invPerMap: roundInt(invPerMap),
+          gain: roundInt(gain),
+        });
       });
 
+      // Paint
       let sumShown = 0;
       [...tbody.querySelectorAll("tr")].forEach((tr, idx) => {
         const invMapCell = tr.querySelector('[data-role="invMap"]');
@@ -492,16 +291,17 @@
           return;
         }
 
-        invMapCell.textContent = fmt.format(round2(data.invPerMap));
-        gainCell.textContent = fmt.format(data.gain);
+        invMapCell.textContent = fmtInt.format(data.invPerMap);
+        gainCell.textContent = fmtInt.format(data.gain);
         sumShown += data.gain;
       });
 
-      checkPill.textContent = `Somme gains: ${fmt.format(round2(sumShown))}`;
+      checkPill.textContent = `Somme gains: ${fmtInt.format(roundInt(sumShown))}`;
       const diff = Math.abs(sumShown - totalGains);
-      checkPill.className = "pill " + (diff < 0.05 ? "good" : "warn");
+      checkPill.className = "pill " + (diff <= 1 ? "good" : "warn"); // tolérance 1 car arrondis
     }
 
+    // Init
     render();
     recalc();
   </script>
