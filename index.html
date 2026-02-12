@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Répartition des gains (Fairplay)</title>
+  <style>
+    /* =========================================================
+       🎛 THEME (dans l'esprit des calculettes de farm / dark PoE)
+       ========================================================= */
+    :root{
+      --bg: #1C1C1C;
+      --panel: rgba(255,255,255,.04);
+      --panel-2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --stroke-2: rgba(255,255,255,.18);
+      --text: #fff;
+      --muted: rgba(255,255,255,.72);
+      --muted-2: rgba(255,255,255,.55);
+      --good: #2ecc71;
+      --warn: #f39c12;
+      --bad: #e74c3c;
+
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0 acknowledging common question? no.
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 18px;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header{
+      display:flex;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: .3px;
+    }
+    .sub{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-bottom: 1px solid var(--stroke);
+      flex-wrap: wrap;
+    }
+
+    .group{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chip{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      padding: 8px 10px;
+      background: var(--panel-2);
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chip strong{ color: var(--text); font-weight: 700; }
+    .chip .mini{ color: var(--muted-2); font-size: 12px; }
+
+    .btns{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    button{
+      cursor:pointer;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    button:hover{
+      background: rgba(255,255,255,.09);
+      border-color: var(--stroke-2);
+    }
+    button.danger{
+      border-color: rgba(231,76,60,.35);
+      background: rgba(231,76,60,.10);
+    }
+    button.danger:hover{
+      background: rgba(231,76,60,.16);
+    }
+
+    /* Inputs */
+    input[type="text"], input[type="number"]{
+      background: rgba(0,0,0,.20);
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 9px 10px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+    input[type="number"]{ appearance: textfield; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin:0; }
+    input:focus{
+      border-color: var(--stroke-2);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.07);
+    }
+
+    .table-wrap{
+      overflow:auto;
+    }
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 840px;
+    }
+    thead th{
+      text-align:left;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      vertical-align: middle;
+    }
+    tbody tr:hover{
+      background: rgba(255,255,255,.03);
+    }
+
+    .num{
+      text-align:right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .muted{
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    .gain{
+      font-weight: 800;
+    }
+
+    .row-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap: 8px;
+    }
+
+    .status{
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,.02);
+    }
+
+    .status .left{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    .pill{
+      padding: 6px 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pill.good{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.10); color: rgba(46,204,113,.95); }
+    .pill.warn{ border-color: rgba(243,156,18,.35); background: rgba(243,156,18,.10); color: rgba(243,156,18,.95); }
+    .pill.bad{ border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.10); color: rgba(231,76,60,.95); }
+
+    .help{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    code.inline{
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--stroke);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>Répartition des gains (mode fairplay)</h1>
+        <p class="sub">
+          Règle: <strong>remboursement des investissements</strong> puis partage du <strong>profit</strong> au prorata des maps.
+          Si les gains ne couvrent pas les investissements, répartition au prorata de l’investissement.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="topbar">
+        <div class="group">
+          <div class="chip">
+            Gains du groupe :
+            <strong><span id="gainsDisplay">6000</span></strong>
+            <span class="mini">(div/chaos)</span>
+          </div>
+          <div style="min-width:240px;">
+            <input id="gainsInput" type="number" min="0" step="1" value="6000" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button id="addRowBtn">+ Ajouter un joueur</button>
+          <button class="danger" id="resetBtn">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:170px;">Nom du joueur</th>
+              <th style="min-width:160px;">Nombre de maps jouées</th>
+              <th style="min-width:260px;">Investissement total (div/chaos)</th>
+              <th style="min-width:260px;">Investissement par map</th>
+              <th style="min-width:220px;">Gains (div/chaos)</th>
+              <th style="min-width:90px;"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="status">
+        <div class="left">
+          <span class="pill" id="playersPill">Joueurs: 0</span>
+          <span class="pill" id="invPill">Invest total: 0</span>
+          <span class="pill" id="mapsPill">Maps total: 0</span>
+          <span class="pill" id="profitPill">Profit: 0</span>
+        </div>
+        <div class="left">
+          <span class="pill" id="modePill">Mode: —</span>
+          <span class="pill" id="checkPill">Somme gains: 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="help">
+      Astuce: tu peux laisser des lignes vides, elles ne seront pas comptées. Les chiffres sont affichés en
+      français (virgule) et arrondis à 2 décimales.
+      <br/>
+      Modèle “fairplay” = <code class="inline">gain = inv + (gains - totalInv) * (maps / totalMaps)</code>
+      (si <code class="inline">gains &lt; totalInv</code> ⇒ prorata investissement).
+    </div>
+  </div>
+
+  <script>
+    // -----------------------
+    // Utils
+    // -----------------------
+    const fmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+    const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+
+    const toNum = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+
+    // -----------------------
+    // Data
+    // -----------------------
+    const defaultRows = [
+      { name: "Name 1", maps: 12, inv: 120 },
+      { name: "Name 2", maps: 12, inv: 100 },
+      { name: "Name 3", maps: 10, inv: 150 },
+      { name: "Name 4", maps: 5,  inv: 200 },
+    ];
+
+    let rows = structuredClone(defaultRows);
+
+    // -----------------------
+    // DOM
+    // -----------------------
+    const tbody = document.getElementById("tbody");
+    const gainsInput = document.getElementById("gainsInput");
+    const gainsDisplay = document.getElementById("gainsDisplay");
+
+    const playersPill = document.getElementById("playersPill");
+    const invPill = document.getElementById("invPill");
+    const mapsPill = document.getElementById("mapsPill");
+    const profitPill = document.getElementById("profitPill");
+    const modePill = document.getElementById("modePill");
+    const checkPill = document.getElementById("checkPill");
+
+    document.getElementById("addRowBtn").addEventListener("click", () => {
+      rows.push({ name: "", maps: 0, inv: 0 });
+      render();
+      recalc();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      rows = structuredClone(defaultRows);
+      gainsInput.value = 6000;
+      render();
+      recalc();
+    });
+
+    gainsInput.addEventListener("input", () => {
+      gainsDisplay.textContent = fmt0.format(toNum(gainsInput.value));
+      recalc();
+    });
+
+    // -----------------------
+    // Render
+    // -----------------------
+    function render() {
+      tbody.innerHTML = "";
+
+      rows.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+
+        // Name
+        const tdName = document.createElement("td");
+        const inName = document.createElement("input");
+        inName.type = "text";
+        inName.value = r.name ?? "";
+        inName.placeholder = "Nom…";
+        inName.addEventListener("input", (e) => {
+          rows[idx].name = e.target.value;
+          recalc();
+        });
+        tdName.appendChild(inName);
+
+        // Maps
+        const tdMaps = document.createElement("td");
+        const inMaps = document.createElement("input");
+        inMaps.type = "number";
+        inMaps.min = "0";
+        inMaps.step = "1";
+        inMaps.value = r.maps ?? 0;
+        inMaps.addEventListener("input", (e) => {
+          rows[idx].maps = toNum(e.target.value);
+          recalc();
+        });
+        tdMaps.appendChild(inMaps);
+
+        // Invest total
+        const tdInv = document.createElement("td");
+        const inInv = document.createElement("input");
+        inInv.type = "number";
+        inInv.min = "0";
+        inInv.step = "1";
+        inInv.value = r.inv ?? 0;
+        inInv.addEventListener("input", (e) => {
+          rows[idx].inv = toNum(e.target.value);
+          recalc();
+        });
+        tdInv.appendChild(inInv);
+
+        // Invest per map (computed)
+        const tdInvMap = document.createElement("td");
+        tdInvMap.className = "num muted";
+        tdInvMap.dataset.role = "invMap";
+        tdInvMap.textContent = "—";
+
+        // Gains (computed)
+        const tdGain = document.createElement("td");
+        tdGain.className = "num gain";
+        tdGain.dataset.role = "gain";
+        tdGain.textContent = "—";
+
+        // Actions
+        const tdAct = document.createElement("td");
+        const actions = document.createElement("div");
+        actions.className = "row-actions";
+        const del = document.createElement("button");
+        del.className = "danger";
+        del.textContent = "✕";
+        del.title = "Supprimer";
+        del.addEventListener("click", () => {
+          rows.splice(idx, 1);
+          render();
+          recalc();
+        });
+        actions.appendChild(del);
+        tdAct.appendChild(actions);
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdMaps);
+        tr.appendChild(tdInv);
+        tr.appendChild(tdInvMap);
+        tr.appendChild(tdGain);
+        tr.appendChild(tdAct);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // -----------------------
+    // Calc (Fairplay)
+    // -----------------------
+    function recalc() {
+      const totalGains = toNum(gainsInput.value);
+      gainsDisplay.textContent = fmt0.format(totalGains);
+
+      // Active rows = rows with a name OR any non-zero number
+      const active = rows
+        .map((r, i) => ({ ...r, i }))
+        .filter(r => (String(r.name || "").trim() !== "") || toNum(r.maps) > 0 || toNum(r.inv) > 0);
+
+      const totalInv = active.reduce((s, r) => s + toNum(r.inv), 0);
+      const totalMaps = active.reduce((s, r) => s + toNum(r.maps), 0);
+
+      // Determine mode
+      const enoughToRefund = totalGains >= totalInv;
+      const profit = totalGains - totalInv;
+
+      playersPill.textContent = `Joueurs: ${active.length}`;
+      invPill.textContent = `Invest total: ${fmt.format(totalInv)}`;
+      mapsPill.textContent = `Maps total: ${fmt0.format(totalMaps)}`;
+      profitPill.textContent = `Profit: ${fmt.format(profit)}`;
+
+      // Update pills styles
+      profitPill.className = "pill " + (profit >= 0 ? "good" : "bad");
+      modePill.className = "pill " + (enoughToRefund ? "good" : "warn");
+      modePill.textContent = enoughToRefund ? "Mode: remboursement + profit/maps" : "Mode: gains < investissement (prorata inv)";
+
+      // Compute each row gain
+      const gainsByIndex = new Map();
+
+      active.forEach(r => {
+        const maps = toNum(r.maps);
+        const inv = toNum(r.inv);
+
+        // Invest per map
+        const invPerMap = (maps > 0) ? inv / maps : 0;
+
+        let gain = 0;
+        if (!active.length || totalGains === 0) {
+          gain = 0;
+        } else if (!enoughToRefund) {
+          // not enough: prorata investissement
+          gain = totalInv > 0 ? totalGains * (inv / totalInv) : 0;
+        } else {
+          // refund + profit shared by maps
+          const share = totalMaps > 0 ? profit * (maps / totalMaps) : 0;
+          gain = inv + share;
+        }
+
+        gainsByIndex.set(r.i, { invPerMap, gain: round2(gain) });
+      });
+
+      // Write computed cells (for all rows, including inactive -> show —)
+      let sumShown = 0;
+
+      [...tbody.querySelectorAll("tr")].forEach((tr, idx) => {
+        const invMapCell = tr.querySelector('[data-role="invMap"]');
+        const gainCell = tr.querySelector('[data-role="gain"]');
+
+        const data = gainsByIndex.get(idx);
+        if (!data) {
+          invMapCell.textContent = "—";
+          gainCell.textContent = "—";
+          return;
+        }
+
+        invMapCell.textContent = fmt.format(round2(data.invPerMap));
+        gainCell.textContent = fmt.format(data.gain);
+        sumShown += data.gain;
+      });
+
+      checkPill.textContent = `Somme gains: ${fmt.format(round2(sumShown))}`;
+      // Color check (close enough)
+      const diff = Math.abs(sumShown - totalGains);
+      checkPill.className = "pill " + (diff < 0.05 ? "good" : "warn");
+    }
+
+    // Init
+    render();
+    recalc();
+  </script>
+</body>
+</html>
