@@ -332,7 +332,7 @@
       const n = Number(v);
       return Number.isFinite(n) ? n : 0;
     };
-    const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+    const roundInt = (n) => Math.round(n);
 
     // Data
     const defaultRows = [
@@ -477,7 +477,7 @@
           gain = inv + share;
         }
 
-        computed.set(r.i, { invPerMap, gain: round2(gain) });
+        computed.set(r.i, { invPerMap, gain: roundInt(gain) });
       });
 
       let sumShown = 0;
